@@ -32,6 +32,7 @@ def qr_int_str_to_b64(qr_int_str: str) -> str:
 
 
 def b64_to_fields(b64: str) -> List[str]:
+    """Convert the SHC-QR-code single base64 string to the 3 fields it contains."""
     raws = b64.split(".")
     header = b64_decode(raws[0]).decode('utf-8')
     payload = zlib.decompress(b64_decode(raws[1]), -15).decode('utf-8')

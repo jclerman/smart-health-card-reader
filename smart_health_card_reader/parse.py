@@ -4,6 +4,42 @@ import json
 import zlib
 from typing import List, Set
 
+import cv2
+
+# TODO: Catch 'ImportError: Unable to find zbar shared library' and return user-friendly instructions.
+from pyzbar.pyzbar import ZBarSymbol, decode
+
+
+def remove_prefix(text: str, prefix: str) -> str:
+    """Remove prefix from text.
+
+    If the prefix wasn't found, return the original text; otherwise, return the text without the prefix.
+    """
+    if text.startswith(prefix):
+        return text[len(prefix) :]
+    return text
+
+
+def png_to_qr_data(png_fn: str) -> str:
+    """Extract QR code data from a PNG file containing a single QR code.
+
+    Args:
+        png_fn: Path of a PNG file containing a single QR code.
+
+    Returns:
+        Data found in the QR code, as a string, minus the 'shc:/' prefix, if it was there.
+    """
+    image = cv2.imread(png_fn)
+    detected_barcodes: List = decode(image, symbols=[ZBarSymbol.QRCODE])
+    if len(detected_barcodes) > 1:
+        raise Exception("Too many barcodes found - send an image with just one.")
+    if len(detected_barcodes) < 1:
+        raise Exception("No barcodes found - send an image with one.")
+    barcode = detected_barcodes[0]
+    print(f"Found a barcode of type {barcode.type}")  # noqa: T001
+    raw_data = barcode.data
+    return remove_prefix(raw_data.decode("UTF-8"), "shc:/")
+
 
 def qr_int_str_to_b64(qr_int_str: str) -> str:
     """Take the numeric part of the data decoded from the Smart Health Card QR code.

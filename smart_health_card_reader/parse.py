@@ -1,8 +1,9 @@
 """Parsing functions for Smart Health Cards encrypted as QR codes."""
 import base64
 import json
+import urllib.request
 import zlib
-from typing import List, Set
+from typing import List, Set, Tuple
 
 import cv2
 
@@ -65,19 +66,37 @@ def qr_int_str_to_b64(qr_int_str: str) -> str:
     return "".join(decoded_chars)
 
 
-def b64_to_fields(b64: str) -> List[str]:
-    """Convert the SHC-QR-code single base64 string to the 3 fields it contains."""
+def b64_to_fields(b64: str) -> Tuple[str, str, str]:
+    """Convert the SHC-QR-code single base64 string to the 3 fields it contains.
+
+    Returns:
+        3-part Tuple of strings: JSON Web Signature (JWS) Header, JWS Payload, JWS Signature.
+    """
     raws: List[str] = b64.split(".")
     header = b64_decode(raws[0]).decode("utf-8")
     payload = zlib.decompress(b64_decode(raws[1]), -15).decode("utf-8")
     signature = raws[2]
-    return [header, payload, signature]
+    return header, payload, signature
 
 
 def b64_decode(b64: str) -> bytes:
     """Decode Smart Health Card base64-encoded data to corresponding string."""
     decoded: bytes = base64.b64decode(b64 + "==", altchars=b"-_", validate=True)
     return decoded
+
+
+def get_public_key_url(payload_json_str: str) -> str:
+    """From the JWS Payload, return the public key URL."""
+    payload_json = json.loads(payload_json_str)
+    issuer_orig_url = payload_json["iss"]
+    return f"{issuer_orig_url}/.well-known/jwks.json"
+
+
+def get_public_key_json(pk_url: str) -> str:
+    """Return the public keys as a JSON string, using the public key URL."""
+    with urllib.request.urlopen(pk_url) as f:
+        pk = f.read().decode("utf-8")
+    return pk
 
 
 if __name__ == "__main__":

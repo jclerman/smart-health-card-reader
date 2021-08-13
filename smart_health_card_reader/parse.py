@@ -7,9 +7,9 @@ from typing import Any, Dict, List, Set, Tuple, Union
 
 import cv2
 from fastecdsa import ecdsa
+from fastecdsa.point import Point
 
 # TODO: Catch 'ImportError: Unable to find zbar shared library' and return user-friendly instructions.
-from fastecdsa.point import Point
 from pyzbar.pyzbar import ZBarSymbol, decode
 
 

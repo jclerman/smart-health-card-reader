@@ -8,6 +8,7 @@ authors = ["Jeff Lerman <Jeffrey.Lerman@gmail.com>"]
 python = "^3.7"
 opencv-python = "^4.5.2.54"
 pyzbar = "^0.1.8"
+fastecdsa = "^2.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"

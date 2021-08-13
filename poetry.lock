@@ -60,6 +60,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "fastecdsa"
+version = "2.2.1"
+description = "Fast elliptic curve digital signatures"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "filelock"
 version = "3.0.12"
 description = "A platform independent file lock."
@@ -301,7 +309,7 @@ python-versions = "*"
 
 [[package]]
 name = "virtualenv"
-version = "20.7.0"
+version = "20.7.2"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
@@ -334,7 +342,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "879bd750920642ef68e1b405fc781624a840bb6c45569f6c5d2e64489a3f0599"
+content-hash = "7307dfddb6491a191cb6e6db301d1e45de1ac1a45d1f523cdbdfeaabb1ccf577"
 
 [metadata.files]
 atomicwrites = [
@@ -360,6 +368,13 @@ colorama = [
 distlib = [
     {file = "distlib-0.3.2-py2.py3-none-any.whl", hash = "sha256:23e223426b28491b1ced97dc3bbe183027419dfc7982b4fa2f05d5f3ff10711c"},
     {file = "distlib-0.3.2.zip", hash = "sha256:106fef6dc37dd8c0e2c0a60d3fca3e77460a48907f335fa28420463a6f799736"},
+]
+fastecdsa = [
+    {file = "fastecdsa-2.2.1-cp36-cp36m-macosx_10_15_x86_64.whl", hash = "sha256:7d6e1343992f5c7e53fb4b7e70560428ab16bbaa921bc4e48f4c7054843ab372"},
+    {file = "fastecdsa-2.2.1-cp37-cp37m-macosx_10_15_x86_64.whl", hash = "sha256:a062d32b23e144f0d0610e59d526ba82e934a7c5884709061f2229c72de460f3"},
+    {file = "fastecdsa-2.2.1-cp38-cp38-macosx_10_15_x86_64.whl", hash = "sha256:d18e52f08a9ec1450aa66c72848051ddccb26aaad7230c134906a4c5c0f8e019"},
+    {file = "fastecdsa-2.2.1-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:6e4390fae54d49762ed5b863c476dbdda3255bdd9aa483f2896bcd2aaa25df68"},
+    {file = "fastecdsa-2.2.1.tar.gz", hash = "sha256:48d59fcd18d0892a6b76463d4c98caa217975414f6d853af7cfcbbb0284cb52d"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
@@ -576,8 +591,8 @@ typing-extensions = [
     {file = "typing_extensions-3.10.0.0.tar.gz", hash = "sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.7.0-py2.py3-none-any.whl", hash = "sha256:fdfdaaf0979ac03ae7f76d5224a05b58165f3c804f8aa633f3dd6f22fbd435d5"},
-    {file = "virtualenv-20.7.0.tar.gz", hash = "sha256:97066a978431ec096d163e72771df5357c5c898ffdd587048f45e0aecc228094"},
+    {file = "virtualenv-20.7.2-py2.py3-none-any.whl", hash = "sha256:e4670891b3a03eb071748c569a87cceaefbf643c5bac46d996c5a45c34aa0f06"},
+    {file = "virtualenv-20.7.2.tar.gz", hash = "sha256:9ef4e8ee4710826e98ff3075c9a4739e2cb1040de6a2a8d35db0055840dc96a0"},
 ]
 zipp = [
     {file = "zipp-3.5.0-py3-none-any.whl", hash = "sha256:957cfda87797e389580cb8b9e3870841ca991e2125350677b2ca83a0e99390a3"},

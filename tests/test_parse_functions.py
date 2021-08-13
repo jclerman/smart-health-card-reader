@@ -1,10 +1,30 @@
-"""Unit-test qr_int_str_to_b64."""
+"""Unit-tests for parsing functions."""
 import json
 
 import pytest
 
-from smart_health_card_reader.parse import get_public_key_json, get_public_key_url
+from smart_health_card_reader.parse import (
+    b64_decode,
+    b64_to_fields,
+    extract_jws_data_from_qr_data,
+    get_public_key_url,
+    get_public_keyset_json,
+)
 from smart_health_card_reader.parse import qr_int_str_to_b64 as qis2jws
+from smart_health_card_reader.parse import validate_jws_data
+
+from .conftest import TEST_B64_SIG, TEST_FULL_B64
+
+
+def test_qr_int_str_to_b64(qr_int_str):
+    """Test that qr_int_str_to_b64() correctly decodes a full SHC QR-encoded digit-string into base64 string."""
+    assert qis2jws(qr_int_str) == TEST_FULL_B64
+
+
+def test_get_sig():
+    """Test correct signature extraction from the base64 string encoding of a complete SMART Health Card."""
+    assert b64_to_fields(TEST_FULL_B64)[2] == TEST_B64_SIG
+    assert len(b64_decode(TEST_B64_SIG)) == 64
 
 
 @pytest.mark.parametrize(
@@ -36,8 +56,15 @@ def test_get_public_key_url(test_jws_payload):
 
 def test_get_pk(pk_url):
     """Confirm that a public-key is correctly retrieved by get_public_key_json(), given a public-key URL."""
-    pk_json: str = get_public_key_json(pk_url)
+    pk_json: str = get_public_keyset_json(pk_url)
     pk_dict = json.loads(pk_json)
+    assert isinstance(pk_dict, dict)
     assert "keys" in pk_dict
     key1 = pk_dict["keys"][0]
     assert key1["kid"] == "3Kfdg-XwP-7gXyywtUfUADwBumDOPKMQx-iELL11W9s"
+
+
+def test_validate_jws_data(qr_int_str):
+    """Test signing validation of JWS data, comparing the internal payload to the internal signature."""
+    signed_doc, header, payload, sig = extract_jws_data_from_qr_data(qr_int_str)
+    assert validate_jws_data(signed_doc, header, payload, sig)

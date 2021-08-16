@@ -1,20 +1,31 @@
 [tool.poetry]
 name = "smart-health-card-reader"
-version = "0.2.0"
-description = ""
+version = "0.3.0"
+description = "SMART Health Card QR-Code Extractor and Validator"
 authors = ["Jeff Lerman <Jeffrey.Lerman@gmail.com>"]
+
+[tool.poetry.scripts]
+# command_name = module_for_handler : function_for_handler
+validate-shc = 'smart_health_card_reader.validate:validate_one'
+summarize-smart-health-cards = 'smart_health_card_reader.validate:extract_many'
 
 [tool.poetry.dependencies]
 python = "^3.7"
 opencv-python = "^4.5.2.54"
 pyzbar = "^0.1.8"
 fastecdsa = "^2.2.1"
+click = "^7.1.2"
+fhirclient = {git = "https://github.com/smart-on-fhir/client-py.git", tag = "v4.0.0"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
 pre-commit = "^2.7.1"
 mypy = "^0.910"
+black = "^21.6b0"
 
 [build-system]
 requires = ["poetry-core>=1.0.3"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120

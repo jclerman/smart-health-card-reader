@@ -41,7 +41,6 @@ def img_to_qr_data(png_fn: str) -> str:
     if len(detected_barcodes) < 1:
         raise Exception("No barcodes found - send an image with one.")
     barcode = detected_barcodes[0]
-    print(f"Found a barcode of type {barcode.type}")  # noqa: T001
     raw_data = barcode.data
     return remove_prefix(raw_data.decode("UTF-8"), "shc:/")
 
@@ -115,9 +114,7 @@ def get_public_keyset_json(pk_url: str) -> str:
     return pk
 
 
-def get_public_key_from_keyset(
-    pk_json_str: str, kid: str
-) -> Dict[str, Union[str, List[str]]]:
+def get_public_key_from_keyset(pk_json_str: str, kid: str) -> Dict[str, Union[str, List[str]]]:
     """From public-key-set JSON from a SMART Health protocol-compliant issuer, return key matching a key-ID."""
     pk_dict: Dict[str, List[Dict]] = json.loads(pk_json_str)
     assert "keys" in pk_dict
@@ -153,18 +150,14 @@ def extract_jws_data_from_qr_data(qr_data: str) -> Tuple[str, str, str, str]:
             (3) the JWS payload, as a JSON string
             (4) the JWS signature, base-64 encoded
     """
-    qr_data_digit_str: str = remove_prefix(
-        qr_data
-    )  # not always necessary, should always be safe
+    qr_data_digit_str: str = remove_prefix(qr_data)  # not always necessary, should always be safe
     b64 = qr_int_str_to_b64(qr_data_digit_str)
     header, payload, sig = b64_to_fields(b64)
     signed_doc = ".".join(b64.split(".")[0:2])
     return signed_doc, header, payload, sig
 
 
-def validate_jws_data(
-    signed_doc: str, header_json: str, payload_json: str, sig: str
-) -> bool:
+def validate_jws_data(signed_doc: str, header_json: str, payload_json: str, sig: str) -> bool:
     """Validate JWS data by comparing the encryption signature to the signed content.
 
     Parameters:
@@ -180,9 +173,7 @@ def validate_jws_data(
     kid: str = header_dict["kid"]
     pk_url: str = get_public_key_url(payload_json)
     public_keyset_json = get_public_keyset_json(pk_url)
-    pk: Dict[str, Union[str, List[str]]] = get_public_key_from_keyset(
-        public_keyset_json, kid
-    )
+    pk: Dict[str, Union[str, List[str]]] = get_public_key_from_keyset(public_keyset_json, kid)
     assert isinstance(pk["x"], str)
     assert isinstance(pk["y"], str)
     pk_x = int.from_bytes(b64_decode(pk["x"]), byteorder="big")
@@ -199,7 +190,5 @@ if __name__ == "__main__":
         _, jws_header, jws_payload, jws_sig = extract_jws_data_from_qr_data(arg)
         print(f"JWS Header: {jws_header}")  # noqa: T001
         print(f"JWS Payload: {jws_payload}")  # noqa: T001
-        print(  # noqa: T001
-            json.dumps(json.loads(jws_payload), indent=4, sort_keys=True)
-        )
+        print(json.dumps(json.loads(jws_payload), indent=4, sort_keys=True))  # noqa: T001
         print(f"JWS Signature: {jws_sig}")  # noqa: T001

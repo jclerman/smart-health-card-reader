@@ -49,9 +49,7 @@ def test_qis2jws_reject_invalid_chars(in_val: str):
 def test_get_public_key_url(test_jws_payload):
     """Confirm that the public-key URL is correctly extracted from a JWS payload by get_public_key_url."""
     pk_url = get_public_key_url(test_jws_payload)
-    assert (
-        pk_url == "https://spec.smarthealth.cards/examples/issuer/.well-known/jwks.json"
-    )
+    assert pk_url == "https://spec.smarthealth.cards/examples/issuer/.well-known/jwks.json"
 
 
 def test_get_pk(pk_url):

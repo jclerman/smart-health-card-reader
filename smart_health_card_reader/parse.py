@@ -37,9 +37,9 @@ def img_to_qr_data(png_fn: str) -> str:
     image = cv2.imread(png_fn)
     detected_barcodes: List = decode(image, symbols=[ZBarSymbol.QRCODE])
     if len(detected_barcodes) > 1:
-        raise Exception("Too many barcodes found - send an image with just one.")
+        raise Exception(f"Too many barcodes found in {png_fn} - send an image with just one.")
     if len(detected_barcodes) < 1:
-        raise Exception("No barcodes found - send an image with one.")
+        raise Exception(f"No barcodes found in {png_fn} - send an image with one.")
     barcode = detected_barcodes[0]
     raw_data = barcode.data
     return remove_prefix(raw_data.decode("UTF-8"), "shc:/")

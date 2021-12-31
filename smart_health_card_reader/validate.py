@@ -46,7 +46,11 @@ def extract_many(qr_dir: click.Path):
     qr_files = [f for f in files if f.endswith((".bmp", ".jpg", ".png", ".jpeg", ".JPG", ".PNG"))]
     for qr_file in qr_files:
         qr_data = img_to_qr_data(qr_file)
-        doc, header, payload, sig = extract_jws_data_from_qr_data(qr_data)
+        try:
+            doc, header, payload, sig = extract_jws_data_from_qr_data(qr_data)
+        except Exception as e:
+            warnings.warn(f"Could not extract JWS data for {qr_file}")
+            raise e
         is_valid = validate_jws_data(doc, header, payload, sig)
         result: List[str] = [qr_file]
         if is_valid:
@@ -59,17 +63,19 @@ def extract_many(qr_dir: click.Path):
                 resource = entry.resource
                 if isinstance(resource, Patient):
                     if found_pat:
-                        raise Exception("Multiple patients!")
+                        raise Exception(f"Multiple patients in {qr_file}!")
                     else:
                         pat = resource
                         found_pat = True
                 elif isinstance(resource, Immunization):
                     immunizations.append(resource)
                 else:
-                    raise Exception(f"Unknown entry-type: {resource}")
+                    raise Exception(f"Unknown entry-type: {resource} in {qr_file}")
             if not found_pat:
-                raise Exception("No patient found!")
+                raise Exception(f"No patient found in {qr_file}")
             imm_index: int = 0
+            if len(immunizations) < 1:
+                raise Exception(f"No immunizations found in {qr_file}")
             for imm in immunizations:
                 imm_pat = imm.patient
                 imm_index += 1
@@ -81,11 +87,17 @@ def extract_many(qr_dir: click.Path):
             result.append(pat.name[0].family)
             result.append(pat.birthDate.isostring)
             result.append(immunizations[0].occurrenceDateTime.isostring)  # when
-            result.append(immunizations[0].performer[0].actor.display)  # where
+            try:
+                result.append(immunizations[0].performer[0].actor.display)  # where
+            except TypeError:
+                result.append("UNKNOWN PERFORMER")
             result.append(vaccine_human_readable(immunizations[0].vaccineCode.coding[0]))
             if len(immunizations) > 1:
                 result.append(immunizations[1].occurrenceDateTime.isostring)  # when
-                result.append(immunizations[1].performer[0].actor.display)  # where
+                try:
+                    result.append(immunizations[1].performer[0].actor.display)  # where
+                except TypeError:
+                    result.append("UNKNOWN PERFORMER")
                 result.append(vaccine_human_readable(immunizations[1].vaccineCode.coding[0]))
         else:
             result.append("INVALID")

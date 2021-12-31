@@ -19,12 +19,12 @@ fhirclient = {git = "https://github.com/smart-on-fhir/client-py.git", tag = "v4.
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
-pre-commit = "^2.7.1"
-mypy = "^0.910"
-black = "^21.6b0"
+pre-commit = "^2.16.0"
+mypy = "^0.920"
+black = "^21.12b0"
 
 [build-system]
-requires = ["poetry-core>=1.0.3"]
+requires = ["poetry-core>=1.0.7"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.black]
